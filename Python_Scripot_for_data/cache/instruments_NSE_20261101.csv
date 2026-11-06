@@ -1,3 +1,0 @@
-instrument_token,exchange_token,tradingsymbol,name,last_price,expiry,strike,tick_size,lot_size,instrument_type,segment,exchange
-256265,256265,NIFTY 50,NIFTY 50,24500.0,,0.0,0.05,1,INDEX,INDICES,NSE
-260105,260105,NIFTY BANK,NIFTY BANK,52000.0,,0.0,0.05,1,INDEX,INDICES,NSE
