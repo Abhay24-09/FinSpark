@@ -1,0 +1,5 @@
+# Angel One SmartAPI Official SDK & Authentication
+smartapi-python>=1.4.0
+pyotp>=2.8.0
+python-dotenv>=1.0.0
+websocket-client>=1.6.0

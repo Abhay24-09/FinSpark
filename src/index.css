@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Poppins', var(--theme-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --font-poppins: 'Poppins', sans-serif;
+  --font-weight-semibold: 500;
+  --font-weight-bold: 500;
+  --font-weight-extrabold: 500;
+  --font-weight-black: 500;
+
+  --color-primary: var(--theme-color-primary, #603DC8);
+  --color-primary-hover: var(--theme-color-primary-hover, #4F2FA8);
+  --color-primary-light: var(--theme-color-primary-light, #F1ECFE);
+  --color-primary-light-hover: var(--theme-color-primary-light-hover, #E5DCFC);
+
+  --color-accent: var(--theme-color-accent, #FF5722);
+  --color-accent-hover: var(--theme-color-accent-hover, #E64A19);
+  --color-accent-light: var(--theme-color-accent-light, #FFF0EB);
+
+  --color-success: var(--theme-color-success, #12B76A);
+  --color-danger: var(--theme-color-danger, #F04438);
+  --color-warning: var(--theme-color-warning, #F59E0B);
+  --color-warning-bg: var(--theme-color-warning-bg, #FFFBEB);
+  --color-warning-border: var(--theme-color-warning-border, #FEF08A);
+  --color-warning-text: var(--theme-color-warning-text, #92400E);
+
+  --color-app-bg: var(--theme-color-app-bg, #F6F6F6);
+  --color-card-bg: var(--theme-color-card-bg, #FFFFFF);
+  --color-card-border: var(--theme-color-card-border, #F0F0F0);
+
+  --color-ticker-bg: var(--theme-color-ticker-bg, #081B13);
+  --color-ticker-border: var(--theme-color-ticker-border, rgba(6, 78, 59, 0.4));
+  --color-ticker-text: var(--theme-color-ticker-text, #FFFFFF);
+
+  --color-sidebar-bg: var(--theme-color-sidebar-bg, #FFFFFF);
+  --color-sidebar-border: var(--theme-color-sidebar-border, #E5E7EB);
+  --color-sidebar-active-bg: var(--theme-color-sidebar-active-bg, #FF5722);
+  --color-sidebar-active-text: var(--theme-color-sidebar-active-text, #FFFFFF);
+  --color-sidebar-inactive-text: var(--theme-color-sidebar-inactive-text, #9CA3AF);
+  --color-sidebar-hover-bg: var(--theme-color-sidebar-hover-bg, #F3F4F6);
+
+  --color-text-main: var(--theme-color-text-main, #111827);
+  --color-text-muted: var(--theme-color-text-muted, #6B7280);
+  --color-text-light: var(--theme-color-text-light, #9CA3AF);
+}
+
+@layer base {
+  body {
+    background-color: var(--theme-color-app-bg, #f6f6f6);
+    color: var(--theme-color-text-main, #111827);
+    font-family: 'Poppins', var(--theme-font-family, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+
+  b, strong, h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+  }
+
+  /* Remove upper and lower spinner arrows from number inputs */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+/* Custom scrollbar for horizontal containers */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Sidebar Slide-in & Backdrop Animations */
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideOutToRight {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOutBackdrop {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-slide-in-right {
+  animation: slideInFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-out-right {
+  animation: slideOutToRight 0.25s cubic-bezier(0.4, 0, 1, 1) forwards;
+}
+
+.animate-fade-in-backdrop {
+  animation: fadeInBackdrop 0.3s ease-out forwards;
+}
+
+.animate-fade-out-backdrop {
+  animation: fadeOutBackdrop 0.25s ease-in forwards;
+}
+
+/* Infinite Horizontal Market Session Ticker Loop */
+@keyframes tickerScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.animate-ticker-marquee {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: tickerScroll 45s linear infinite;
+}
+
+.animate-ticker-marquee:hover {
+  animation-play-state: paused;
+}
