@@ -31,6 +31,9 @@ import mascotImage from '../../assets/no-positions-mascot.png';
 import RightOrderPanel from '../stock-detail/RightOrderPanel';
 import FilterSidebar from '../common/FilterSidebar';
 import ManageWatchlistModal from './ManageWatchlistModal';
+import PriceAlertDrawer from './PriceAlertDrawer';
+import SipOrderDrawer from './SipOrderDrawer';
+import AddToBasketDrawer from './AddToBasketDrawer';
 
 const WATCHLIST_DEPTH_BIDS = [
   { price: 159.61, orders: 12, quantity: 2250268 },
@@ -273,11 +276,19 @@ export const WatchlistDashboard = ({
     }
   };
 
-  const handleAddToBasket = () => {
-    setBasketToast(true);
-    setTimeout(() => {
-      setBasketToast(false);
-    }, 2000);
+  // Active Sidebar Drawers matching Figma: 'ALERT' | 'SIP' | 'BASKET' | null
+  const [activeDrawer, setActiveDrawer] = useState({
+    type: null,
+    stock: null,
+  });
+
+  const openCustomDrawer = (type, stock) => {
+    setOrderDrawer({ isOpen: false, stock: null, action: 'BUY' });
+    setActiveDrawer({ type, stock: stock || activeStock });
+  };
+
+  const handleAddToBasket = (stock) => {
+    openCustomDrawer('BASKET', stock || activeStock);
   };
 
   const [hoveredTableSymbol, setHoveredTableSymbol] = useState(null);
@@ -308,6 +319,7 @@ export const WatchlistDashboard = ({
   }, [openDropdownSymbol]);
 
   const openOrderPanel = (stock, action) => {
+    setActiveDrawer({ type: null, stock: null });
     setOrderDrawer({
       isOpen: true,
       stock: stock || activeStock,
@@ -609,7 +621,10 @@ export const WatchlistDashboard = ({
                         {/* Alert / Watch Button */}
                         <button
                           type="button"
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            openCustomDrawer('ALERT', stock);
+                          }}
                           className="w-6 h-6 rounded-md bg-white border border-gray-200 text-gray-500 hover:text-gray-900 flex items-center justify-center transition-colors cursor-pointer"
                           title="Set Price Alert"
                         >
@@ -657,7 +672,7 @@ export const WatchlistDashboard = ({
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    showQuickToast(`🔔 Price alert (02) active for ${stock.name}`);
+                                    openCustomDrawer('ALERT', stock);
                                     setOpenDropdownSymbol(null);
                                   }}
                                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-left"
@@ -682,7 +697,7 @@ export const WatchlistDashboard = ({
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    showQuickToast(`📅 Stock SIP scheduled for ${stock.name}`);
+                                    openCustomDrawer('SIP', stock);
                                     setOpenDropdownSymbol(null);
                                   }}
                                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-left"
@@ -693,7 +708,7 @@ export const WatchlistDashboard = ({
                                 <button
                                   type="button"
                                   onClick={() => {
-                                    showQuickToast(`🛍️ ${stock.name} added to your basket!`);
+                                    openCustomDrawer('BASKET', stock);
                                     setOpenDropdownSymbol(null);
                                   }}
                                   className="w-full px-3.5 py-2 flex items-center gap-2.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-left"
@@ -1274,7 +1289,7 @@ export const WatchlistDashboard = ({
                                 type="button"
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  showQuickToast(`🔔 Price alert (02) set for ${s.name} at ₹${s.ltp}`);
+                                  openCustomDrawer('ALERT', s);
                                 }}
                                 className="w-6 h-6 rounded-md text-[#603DC8] hover:bg-[#603DC8]/10 flex items-center justify-center transition-colors cursor-pointer"
                                 title="Set Price Alert"
@@ -1325,7 +1340,7 @@ export const WatchlistDashboard = ({
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          showQuickToast(`🔔 Price alert (02) active for ${s.name}`);
+                                          openCustomDrawer('ALERT', s);
                                           setOpenDropdownSymbol(null);
                                         }}
                                         className="w-full px-3.5 py-2 flex items-center gap-2.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-left"
@@ -1354,7 +1369,7 @@ export const WatchlistDashboard = ({
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          showQuickToast(`📅 Stock SIP scheduled for ${s.name}`);
+                                          openCustomDrawer('SIP', s);
                                           setOpenDropdownSymbol(null);
                                         }}
                                         className="w-full px-3.5 py-2 flex items-center gap-2.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-left"
@@ -1367,7 +1382,7 @@ export const WatchlistDashboard = ({
                                       <button
                                         type="button"
                                         onClick={() => {
-                                          showQuickToast(`🛍️ ${s.name} added to your basket!`);
+                                          openCustomDrawer('BASKET', s);
                                           setOpenDropdownSymbol(null);
                                         }}
                                         className="w-full px-3.5 py-2 flex items-center gap-2.5 text-xs font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors cursor-pointer text-left"
@@ -1623,6 +1638,36 @@ export const WatchlistDashboard = ({
         onCreateWatchlist={handleCreateWatchlist}
         onRenameWatchlist={handleRenameWatchlist}
         onDeleteWatchlist={handleDeleteWatchlist}
+      />
+
+      {/* Figma 1:1 Price Alert Drawer (Screenshot 1 / 5) */}
+      <PriceAlertDrawer
+        isOpen={activeDrawer.type === 'ALERT'}
+        stock={activeDrawer.stock || activeStock}
+        onClose={() => setActiveDrawer({ type: null, stock: null })}
+        onSetAlert={(alert) => {
+          showQuickToast(`🔔 Alert set for ${alert.stockName} at ₹${Number(alert.targetPrice).toFixed(2)}`);
+        }}
+      />
+
+      {/* Figma 1:1 Stock SIP Order Drawer (Screenshot 2 / 6) */}
+      <SipOrderDrawer
+        isOpen={activeDrawer.type === 'SIP'}
+        stock={activeDrawer.stock || activeStock}
+        onClose={() => setActiveDrawer({ type: null, stock: null })}
+        onPlaceSipOrder={(sip) => {
+          showQuickToast(`📅 SIP order placed for ${sip.name} (${sip.frequency})`);
+        }}
+      />
+
+      {/* Figma 1:1 Add to Basket Drawer (Screenshot 3 / 7) */}
+      <AddToBasketDrawer
+        isOpen={activeDrawer.type === 'BASKET'}
+        stock={activeDrawer.stock || activeStock}
+        onClose={() => setActiveDrawer({ type: null, stock: null })}
+        onAddToBasket={({ stock: s, basketNames }) => {
+          showQuickToast(`🛍️ Added ${s?.displayName || s?.name || 'Stock'} to ${basketNames.join(', ')}`);
+        }}
       />
 
       {/* Floating Action Feedback Toast */}
